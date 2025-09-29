@@ -1,4 +1,4 @@
-√# app.py (Final Version for Public Deployment)
+# app.py
 
 import streamlit as st
 import pandas as pd
@@ -13,21 +13,18 @@ st.set_page_config(
 )
 
 # --- DATA LOADING AND PREPARATION ---
-# Load data from a public URL. This is essential for deployment.
-DATA_URL = "https://storage.googleapis.com/generativeai-downloads/innovategear_sales_data.csv"
-
 @st.cache_data
-def load_data(url):
-    """Load and preprocess the sales data from a URL."""
-    data = pd.read_csv(url)
+def load_data(file_path):
+    """Load and preprocess the sales data from a local CSV file."""
+    data = pd.read_csv(file_path)
     data['OrderDate'] = pd.to_datetime(data['OrderDate'])
     data['TotalRevenue'] = data['Quantity'] * data['Price']
     return data
 
 try:
-    df = load_data(DATA_URL)
-except Exception as e:
-    st.error(f"Error loading data: {e}")
+    df = load_data("innovategear_sales_data.csv")
+except FileNotFoundError:
+    st.error("Data file not found. Please ensure 'innovategear_sales_data.csv' is in the same folder as the app.")
     st.stop()
 
 
